@@ -1,6 +1,6 @@
 package com.hebn.jobCollector.infrastructure.integration;
 
-import com.rometools.rome.feed.atom.Entry;
+import com.hebn.jobCollector.application.StackoverflowJobPostingEventListener;
 import com.rometools.rome.feed.synd.SyndEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,16 +8,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.integration.annotation.InboundChannelAdapter;
-import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.Poller;
-import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.feed.inbound.FeedEntryMessageSource;
 import org.springframework.integration.scheduling.PollerMetadata;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.scheduling.support.PeriodicTrigger;
 
 import java.net.MalformedURLException;
@@ -29,7 +25,7 @@ import java.net.URL;
 
 @Slf4j
 @Configuration
-public class RssConfig {
+public class StackoverflowJobRssFeedInitializer {
 
     @Autowired
     private Environment env;
@@ -39,26 +35,6 @@ public class RssConfig {
     public MessageSource<SyndEntry> feedAdapter() throws MalformedURLException {
         // env.getProperty("url")
         return new FeedEntryMessageSource(new URL("http://stackoverflow.com/jobs/feed"), "feedAdapter");
-    }
-
-    // filter
-    @MessageEndpoint
-    public static class Endpoint {
-
-        @ServiceActivator(inputChannel = "feedChannel")
-        public void log(Message<SyndEntry> message) {
-            SyndEntry payload = message.getPayload();
-
-            log.info("link = {}", payload.getLink());
-            log.info("title = {}", payload.getTitle());
-            log.info("url = {} ", payload.getUri());
-            log.info("category === ");
-            payload.getCategories().stream().forEach(category -> System.out.println(category.getName()));
-            log.info("category === ");
-            log.info("description = {}", payload.getDescription().getValue());
-            log.info("pub date = {}", payload.getPublishedDate().toString());
-
-        }
     }
 
     // pipe
