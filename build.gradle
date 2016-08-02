@@ -39,6 +39,7 @@ dependencies {
 	compile('com.google.guava:guava:11.0.2')
 
 	runtime('com.h2database:h2')
+	runtime('mysql:mysql-connector-java')
 	runtime('org.postgresql:postgresql')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 
