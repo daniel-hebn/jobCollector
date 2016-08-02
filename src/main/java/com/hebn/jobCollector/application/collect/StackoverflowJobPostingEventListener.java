@@ -1,4 +1,4 @@
-package com.hebn.jobCollector.application;
+package com.hebn.jobCollector.application.collect;
 
 import com.hebn.jobCollector.domain.StackoverflowJobPosting;
 import com.hebn.jobCollector.domain.StackoverflowJobPostingRepository;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @MessageEndpoint
 public class StackoverflowJobPostingEventListener {
 
-    private static final String STACKOVERFLOW_JOB_BASE_URL = "http://stackoverflow.com/jobs/";
+    private static final String STACKOVERFLOW_JOB_URL_PARTITION = "stackoverflow.com/jobs/";
 
     @Autowired
     private StackoverflowJobPostingRepository stackoverflowJobPostingRepository;
@@ -49,7 +49,7 @@ public class StackoverflowJobPostingEventListener {
         String categories = payload.getCategories().stream().map(category -> category.getName()).collect(Collectors.joining(","));
         Date publishDate = payload.getPublishedDate();
 
-        int preIndex = STACKOVERFLOW_JOB_BASE_URL.length();
+        int preIndex = link.indexOf(STACKOVERFLOW_JOB_URL_PARTITION) + STACKOVERFLOW_JOB_URL_PARTITION.length();
         int postIndex = link.indexOf("/", preIndex);
         Long postingId = Long.parseLong(link.substring(preIndex, postIndex));
 

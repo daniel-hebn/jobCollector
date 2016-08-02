@@ -1,6 +1,5 @@
 package com.hebn.jobCollector.infrastructure.integration;
 
-import com.hebn.jobCollector.application.StackoverflowJobPostingEventListener;
 import com.rometools.rome.feed.synd.SyndEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

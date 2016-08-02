@@ -1,4 +1,4 @@
-package com.hebn.jobCollector.application;
+package com.hebn.jobCollector.application.collect;
 
 import com.hebn.jobCollector.domain.StackoverflowJobPosting;
 import org.springframework.data.domain.Page;
