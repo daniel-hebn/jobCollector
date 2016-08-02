@@ -1,6 +1,5 @@
 package com.hebn.jobCollector.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import javax.persistence.Entity;
@@ -24,6 +23,10 @@ public class StackoverflowJobPosting {
     private String title;
     private String categories;
     private Date publishDate;
+
+    public StackoverflowJobPosting() {
+
+    }
 
     public StackoverflowJobPosting(Long postingId, String link, String title, String categories, Date publishDate) {
         this.postingId = postingId;

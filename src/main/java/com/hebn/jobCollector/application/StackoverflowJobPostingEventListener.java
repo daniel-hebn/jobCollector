@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-//@MessageEndpoint
+@MessageEndpoint
 public class StackoverflowJobPostingEventListener {
 
     private static final String STACKOVERFLOW_JOB_BASE_URL = "http://stackoverflow.com/jobs/";
@@ -32,11 +32,15 @@ public class StackoverflowJobPostingEventListener {
     // filter
     @Transactional(propagation = Propagation.SUPPORTS)
     @ServiceActivator(inputChannel = "feedChannel")
-    public void log(Message<SyndEntry> message) {
+    public void syncJobPosting(Message<SyndEntry> message) {
         StackoverflowJobPosting jobPosting = convertFrom(message.getPayload());
 
-        // TODO - check postingId exist and if not exist then insert
-        stackoverflowJobPostingRepository.save(jobPosting);
+        if (notExistJobPosting(jobPosting))
+            stackoverflowJobPostingRepository.save(jobPosting);
+    }
+
+    private boolean notExistJobPosting(StackoverflowJobPosting jobPosting) {
+        return stackoverflowJobPostingRepository.findByPostingId(jobPosting.getPostingId()) == null;
     }
 
     private StackoverflowJobPosting convertFrom(SyndEntry payload) {
