@@ -4,6 +4,7 @@ import com.hebn.jobCollector.domain.StackoverflowJobPosting;
 import com.hebn.jobCollector.domain.StackoverflowJobPostingRepository;
 import com.rometools.rome.feed.synd.SyndEntry;
 import lombok.extern.slf4j.Slf4j;
+import org.jdom2.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class StackoverflowJobPostingEventListener {
 
     private static final String STACKOVERFLOW_JOB_URL_PARTITION = "stackoverflow.com/jobs/";
+    private static final String W3_ORG_NAMESPACE_URL = "http://www.w3.org/2005/Atom";
 
     @Autowired
     private StackoverflowJobPostingRepository stackoverflowJobPostingRepository;
@@ -47,13 +48,27 @@ public class StackoverflowJobPostingEventListener {
         String link = payload.getLink();
         String title = payload.getTitle();
         String categories = payload.getCategories().stream().map(category -> category.getName()).collect(Collectors.joining(","));
-        Date publishDate = payload.getPublishedDate();
 
         int preIndex = link.indexOf(STACKOVERFLOW_JOB_URL_PARTITION) + STACKOVERFLOW_JOB_URL_PARTITION.length();
         int postIndex = link.indexOf("/", preIndex);
-        Long postingId = Long.parseLong(link.substring(preIndex, postIndex));
+        final Long postingId = Long.parseLong(link.substring(preIndex, postIndex));
 
-        return new StackoverflowJobPosting(postingId, link, title, categories, publishDate);
+        String company = "" , country = "", location = "", publishDate = "";
+        for (Element element : payload.getForeignMarkup()) {
+            if (element.getNamespaceURI().equals(W3_ORG_NAMESPACE_URL)) {
+                switch (element.getName()) {
+                    case "author":
+                        company = element.getValue();
+                    case "updated":
+                        publishDate = element.getValue();
+                }
+            } else if (element.getNamespaceURI().contains(STACKOVERFLOW_JOB_URL_PARTITION)) {
+                String[] arrCountryAndLocation = element.getValue().split(", ");
+                location = arrCountryAndLocation[0];
+                country = arrCountryAndLocation.length == 2 ? arrCountryAndLocation[1] : "";
+            }
+        }
+        return new StackoverflowJobPosting(postingId, link, title, company, country, location, categories, publishDate);
     }
 
 }
