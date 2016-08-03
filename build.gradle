@@ -25,6 +25,10 @@ repositories {
 	mavenCentral()
 }
 
+bootRun {
+	systemProperties = System.properties
+	main = 'com.hebn.jobCollector.Application'
+}
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-actuator')

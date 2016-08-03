@@ -2,6 +2,7 @@ package com.hebn.jobCollector.domain;
 
 import lombok.Getter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,14 +20,13 @@ public class StackoverflowJobPosting {
     @GeneratedValue
     private Long id;
     private Long postingId;
+    @Column(columnDefinition = "TEXT", length = Integer.MAX_VALUE)
     private String link;
     private String title;
     private String categories;
     private Date publishDate;
 
-    public StackoverflowJobPosting() {
-
-    }
+    public StackoverflowJobPosting() {}
 
     public StackoverflowJobPosting(Long postingId, String link, String title, String categories, Date publishDate) {
         this.postingId = postingId;

@@ -3,6 +3,7 @@ package com.hebn.jobCollector.application.collect;
 import com.hebn.jobCollector.domain.StackoverflowJobPosting;
 import com.hebn.jobCollector.domain.StackoverflowJobPostingRepository;
 import com.rometools.rome.feed.synd.SyndEntry;
+import org.jdom2.Element;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
@@ -44,6 +45,16 @@ public class StackoverflowJobPostingEventListener {
     }
 
     private StackoverflowJobPosting convertFrom(SyndEntry payload) {
+
+        log.info("payload = {}", payload);
+        for (Element foreignMarkup : payload.getForeignMarkup()) {
+            if (foreignMarkup.getNamespaceURI().equals("http://stackoverflow.com/jobs/")) {
+
+                log.info("foreignMarkup.getName() = {}", foreignMarkup.getName());
+                log.info("foreignMarkup.getValue() = {}", foreignMarkup.getValue());
+            }
+        }
+
         String link = payload.getLink();
         String title = payload.getTitle();
         String categories = payload.getCategories().stream().map(category -> category.getName()).collect(Collectors.joining(","));
