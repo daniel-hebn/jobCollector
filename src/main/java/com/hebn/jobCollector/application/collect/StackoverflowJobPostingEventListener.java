@@ -3,7 +3,6 @@ package com.hebn.jobCollector.application.collect;
 import com.hebn.jobCollector.domain.StackoverflowJobPosting;
 import com.hebn.jobCollector.domain.StackoverflowJobPostingRepository;
 import com.rometools.rome.feed.synd.SyndEntry;
-import org.jdom2.Element;
 import lombok.extern.slf4j.Slf4j;
 import org.jdom2.Element;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,16 +45,6 @@ public class StackoverflowJobPostingEventListener {
     }
 
     private StackoverflowJobPosting convertFrom(SyndEntry payload) {
-
-        log.info("payload = {}", payload);
-        for (Element foreignMarkup : payload.getForeignMarkup()) {
-            if (foreignMarkup.getNamespaceURI().equals("http://stackoverflow.com/jobs/")) {
-
-                log.info("foreignMarkup.getName() = {}", foreignMarkup.getName());
-                log.info("foreignMarkup.getValue() = {}", foreignMarkup.getValue());
-            }
-        }
-
         String link = payload.getLink();
         String title = payload.getTitle();
         String categories = payload.getCategories().stream().map(category -> category.getName()).collect(Collectors.joining(","));
@@ -76,7 +65,11 @@ public class StackoverflowJobPostingEventListener {
             } else if (element.getNamespaceURI().contains(STACKOVERFLOW_JOB_URL_PARTITION)) {
                 String[] arrCountryAndLocation = element.getValue().split(", ");
                 location = arrCountryAndLocation[0];
-                country = arrCountryAndLocation.length == 2 ? arrCountryAndLocation[1] : "";
+                if (arrCountryAndLocation.length == 2) {
+                    country =  arrCountryAndLocation[1];
+                } else if (arrCountryAndLocation.length == 3) {
+                    country =  arrCountryAndLocation[2];
+                }
             }
         }
         return new StackoverflowJobPosting(postingId, link, title, company, country, location, categories, publishDate);
