@@ -30,7 +30,7 @@ public class StackoverflowJobRssFeedInitializer {
     private Environment env;
 
     @Bean
-    @InboundChannelAdapter(value = "feedChannel", poller = @Poller(maxMessagesPerPoll = "100", fixedRate = "10000"))
+    @InboundChannelAdapter(value = "feedChannel", poller = @Poller(maxMessagesPerPoll = "1000", fixedRate = "1800000"))
     public MessageSource<SyndEntry> feedAdapter() throws MalformedURLException {
         // env.getProperty("url")
         return new FeedEntryMessageSource(new URL("http://stackoverflow.com/jobs/feed"), "feedAdapter");
@@ -45,7 +45,7 @@ public class StackoverflowJobRssFeedInitializer {
     // <int:poller id="poller" default="true" fixed-rate="10"/>
     @Bean(name = PollerMetadata.DEFAULT_POLLER)
     public PollerMetadata poller() {
-        PeriodicTrigger trigger = new PeriodicTrigger(1000 * 10);
+        PeriodicTrigger trigger = new PeriodicTrigger(1000 * 60 * 30);
         trigger.setFixedRate(true);
         PollerMetadata pollerMetadata = new PollerMetadata();
         pollerMetadata.setTrigger(trigger);
