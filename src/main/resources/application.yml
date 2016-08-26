@@ -21,6 +21,9 @@ spring:
       path: /h2-console
 
 ---
+server:
+  port: 80
+
 spring:
   profiles: production
   datasource:
