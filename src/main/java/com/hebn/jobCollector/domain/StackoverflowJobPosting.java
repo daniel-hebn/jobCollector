@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 /**
  * Created by greg.lee on 2016. 8. 1..
@@ -26,14 +27,14 @@ public class StackoverflowJobPosting {
     private String country;
     private String location;
     private String categories;
-    private String publishDate;
+    private LocalDateTime publishDate;
 
     public StackoverflowJobPosting() {
 
     }
 
     public StackoverflowJobPosting(Long postingId, String link, String title, String company, String country,
-                                   String location, String categories, String publishDate) {
+                                   String location, String categories, LocalDateTime publishDate) {
         this.postingId = postingId;
         this.link = link;
         this.title = title;

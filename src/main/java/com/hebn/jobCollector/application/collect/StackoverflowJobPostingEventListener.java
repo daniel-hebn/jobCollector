@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 /**
@@ -53,14 +54,15 @@ public class StackoverflowJobPostingEventListener {
         int postIndex = link.indexOf("/", preIndex);
         final Long postingId = Long.parseLong(link.substring(preIndex, postIndex));
 
-        String company = "" , country = "", location = "", publishDate = "";
+        String company = "" , country = "", location = "";
+        LocalDateTime publishDate = null;
         for (Element element : payload.getForeignMarkup()) {
             if (element.getNamespaceURI().equals(W3_ORG_NAMESPACE_URL)) {
                 switch (element.getName()) {
                     case "author":
                         company = element.getValue();
                     case "updated":
-                        publishDate = element.getValue();
+                        publishDate = LocalDateTime.parse(element.getValue());
                 }
             } else if (element.getNamespaceURI().contains(STACKOVERFLOW_JOB_URL_PARTITION)) {
                 String[] arrCountryAndLocation = element.getValue().split(", ");
