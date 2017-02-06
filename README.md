@@ -1,4 +1,8 @@
-# Stackoverflow Job Posting Collector 
-> for Analysis Job Posting keyword 
+# Stackoverflow Job Posting Collector
+This project is Collector about job posting of stackoverflow using Spring Boot and Spring Integration (RSS Feed)
+And this data is analyzed via spark and zeppelin.
 
-http://greg-lee.fun25.co.kr:13804/#/notebook/2BV1Z2FRU
+Analysis item is 1)keyword 2)country 3)company 
+
+> zeppelin url
+http://greg-lee.fun25.co.kr:13804/#/notebook/2CAZQCHXN
